@@ -1,18 +1,15 @@
 package com.first.boot.springboot.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "HtmlPageTable")
 public class HtmlPage {
     @Id
-    @Column
     private String url;
 
-    @Column
+    @Column(length = 100000)
+    @Lob
     private String content;
 
     public String getUrl() {
@@ -37,5 +34,22 @@ public class HtmlPage {
                 "url='" + url + '\'' +
                 ", content='" + content + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        HtmlPage htmlPage = (HtmlPage) o;
+
+        if (url != null ? !url.equals(htmlPage.url) : htmlPage.url != null) return false;
+        return content != null ? content.equals(htmlPage.content) : htmlPage.content == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = url != null ? url.hashCode() : 0;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        return result;
     }
 }
