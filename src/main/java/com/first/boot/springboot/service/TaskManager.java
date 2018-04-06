@@ -8,17 +8,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TaskManager {
+    private boolean running = true;
+
     @Autowired
     private HtmlLoadService htmlLoadService;
 
     @Autowired
     private HtmlPageService pageService;
 
-    @Scheduled(fixedDelay = 500)
+    @Scheduled(fixedDelay = 1000)
     public void run() {
-        if (pageService.getTotalPageCount() == 0) {
-            pageService.addSeed("https://habrahabr.ru");
+        if (running) {
+            parseNextPage();
         }
+    }
+
+    private void parseNextPage() {
 
         HtmlPage unparsed = pageService.getUnparsedPage();
 
@@ -32,10 +37,13 @@ public class TaskManager {
             System.out.println("End of parsing");
         }
 
-        int totalPageCount = pageService.getTotalPageCount();
-        int unparsedPageCount = pageService.getUnparsedPageCount();
-        int percent = 100 * unparsedPageCount / totalPageCount;
-        System.out.println("Total, unparsed: " + pageService.getTotalPageCount() + ", " + pageService.getUnparsedPageCount() + ", " + percent + "%");
-//        System.out.println("URL Count: " + pageService.getTotalPageCount());
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }
